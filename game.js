@@ -1,6 +1,6 @@
 //@ts-check
 
-class TicTacToe {
+export class TicTacToe {
     started
     finished
     win
