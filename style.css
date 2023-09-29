@@ -20,3 +20,51 @@ body {
     font-weight: bold;
     padding: 0.5em 0;
 }
+
+#gameContainer {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    align-items: center;
+    gap: 1em;
+    padding: 1em;
+    padding-top: 0;
+    width: calc(100% - 2em);
+}
+
+.gamePlayButton {
+    display: flex;
+    flex-direction: row;
+    padding: 0.5em;
+    background-color: hsl(240, 15%, 25%);
+    border-radius: 0.5em;
+
+    box-shadow: 0.1em 0.1em 0.2em #00000080;
+    cursor: pointer;
+}
+
+#gameGrid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr;
+    background-color: white;
+    width: 30em;
+    gap: 0.5em;
+    border: solid white 0.5em;
+    aspect-ratio: 1;
+}
+
+.tile {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    background-color: hsl(240, 15%, 25%);
+}
+
+@media screen and (max-width: 550px), screen and (max-height: 630px) {
+    #gameGrid {
+        width: 20em;
+    }
+}
