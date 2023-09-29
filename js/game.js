@@ -60,7 +60,6 @@ export class TicTacToe {
         this.currentPlayerTurn = this.currentPlayerTurn ? 0 : 1
 
         const win = this.checkWinFromLastMoveAllFormula()
-        console.log(win)
         if (win) {
             this.win = this.matchData[this.matchData.length - 1].playerID
         }
