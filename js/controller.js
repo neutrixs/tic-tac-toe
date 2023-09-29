@@ -23,6 +23,7 @@ export class Controller {
         this.stateElement.id = 'state'
         this.gridElement = document.createElement('div')
         this.gridElement.id = 'gameGrid'
+        this.gridElement.style.cursor = 'not-allowed'
         this.tiles = this.genTiles()
         this.loadTiles()
 
@@ -77,6 +78,9 @@ export class Controller {
             for (let x = 0; x < 3; x++) {
                 const element = document.createElement('div')
                 element.classList.add('tile')
+                element.addEventListener('click', () => {
+                    this.turn(x, y)
+                })
 
                 list[y].push(element)
             }
@@ -104,6 +108,25 @@ export class Controller {
      */
     play() {
         this.Game.play()
+        this.updateTurnText()
+        this.gridElement.style.cursor = 'pointer'
+    }
+
+    /**
+     * @param {number} x
+     * @param {number} y
+     * @returns {void}
+     */
+    turn(x, y) {
+        if (!this.Game.started || this.Game.finished) {
+            return
+        }
+
+        const currentTurn = this.Game.currentPlayerTurn
+        const valid = this.Game.takeTurn(x, y)
+        if (!valid) return
+
+        this.tiles[y][x].innerText = PLAYER_NAME[currentTurn]
         this.updateTurnText()
     }
 

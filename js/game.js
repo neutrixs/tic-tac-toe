@@ -29,7 +29,7 @@ export class TicTacToe {
     constructor() {
         this.started = false
         this.finished = false
-        this.win = 0
+        this.win = -1
         this.matchData = []
         this.currentPlayerTurn = 0
     }
@@ -54,7 +54,7 @@ export class TicTacToe {
 
     takeTurn(x, y) {
         const exists = this.matchData.find(data => data.x == x && data.y == y)
-        if (exists) return false
+        if (exists || this.win != -1) return false
 
         this.matchData.push({ playerID: this.currentPlayerTurn, x, y })
         this.currentPlayerTurn = this.currentPlayerTurn ? 0 : 1
