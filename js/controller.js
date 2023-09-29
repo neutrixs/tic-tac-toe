@@ -128,6 +128,13 @@ export class Controller {
 
         this.tiles[y][x].innerText = PLAYER_NAME[currentTurn]
         this.updateTurnText()
+
+        if (this.Game.win != -1) {
+            const text = 'Winner: ' + PLAYER_NAME[this.Game.win]
+            const el = this.genStateText(text)
+            this.stateElement.lastChild?.remove()
+            this.stateElement.appendChild(el)
+        }
     }
 
     /**
