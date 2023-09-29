@@ -19,12 +19,7 @@ export class TicTacToe {
     /**
      * @type {[number, number][]}
      */
-    formulas = [
-        [1, 0],
-        [0, 1],
-        [1, 1],
-        [1, -1],
-    ]
+    formulas
 
     constructor() {
         this.started = false
@@ -32,6 +27,12 @@ export class TicTacToe {
         this.win = -1
         this.matchData = []
         this.currentPlayerTurn = 0
+        this.formulas = [
+            [1, 0],
+            [0, 1],
+            [1, 1],
+            [1, -1],
+        ]
     }
 
     /**
