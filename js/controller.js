@@ -1,5 +1,5 @@
 //@ts-check
-import { TicTacToe } from './game.js'
+import { TicTacToe, FINAL_DATA } from './game.js'
 
 const PLAYER_NAME = ['X', 'O']
 
@@ -129,11 +129,17 @@ export class Controller {
         this.tiles[y][x].innerText = PLAYER_NAME[currentTurn]
         this.updateTurnText()
 
-        if (this.Game.win != -1) {
-            const text = 'Winner: ' + PLAYER_NAME[this.Game.win]
-            const el = this.genStateText(text)
-            this.stateElement.lastChild?.remove()
-            this.stateElement.appendChild(el)
+        const winData = this.Game.checkWinFromLastMoveAllFormula()
+        switch (winData) {
+            case FINAL_DATA.WIN:
+                {
+                    const text = 'Winner: ' + PLAYER_NAME[this.Game.win]
+                    this.updateTurnTextCustom(text)
+                }
+                break
+            case FINAL_DATA.DRAW: {
+                this.updateTurnTextCustom('Draw!')
+            }
         }
     }
 
@@ -143,5 +149,14 @@ export class Controller {
     updateTurnText() {
         this.stateElement.firstChild?.remove()
         this.stateElement.appendChild(this.genStateText('Your turn: ' + PLAYER_NAME[this.Game.currentPlayerTurn]))
+    }
+
+    /**
+     * @returns {void}
+     * @param {string} text
+     */
+    updateTurnTextCustom(text) {
+        this.stateElement.firstChild?.remove()
+        this.stateElement.appendChild(this.genStateText(text))
     }
 }

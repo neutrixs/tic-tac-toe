@@ -1,5 +1,18 @@
 //@ts-check
 
+/**
+ * @typedef {number} FinalData
+ */
+
+/**
+ * @enum {FinalData}
+ */
+export const FINAL_DATA = {
+    UNFINISHED: 0,
+    WIN: 1,
+    DRAW: 2,
+}
+
 export class TicTacToe {
     started
     finished
@@ -61,8 +74,11 @@ export class TicTacToe {
         this.currentPlayerTurn = this.currentPlayerTurn ? 0 : 1
 
         const win = this.checkWinFromLastMoveAllFormula()
-        if (win) {
+        if (win == FINAL_DATA.WIN) {
             this.win = this.matchData[this.matchData.length - 1].playerID
+        }
+        if (win != FINAL_DATA.UNFINISHED) {
+            this.finished = true
         }
 
         return true
@@ -120,14 +136,18 @@ export class TicTacToe {
     }
 
     /**
-     * @returns {boolean} win
+     * @returns {FinalData}
      */
 
     checkWinFromLastMoveAllFormula() {
-        let win = false
+        let win = FINAL_DATA.UNFINISHED
         for (const formula of this.formulas) {
-            win = win || this.checkWinFromLastMove(formula).win
+            if (this.checkWinFromLastMove(formula).win) {
+                win = FINAL_DATA.WIN
+            }
         }
+
+        if (win == FINAL_DATA.UNFINISHED && this.matchData.length == 9) win = FINAL_DATA.DRAW
 
         return win
     }
