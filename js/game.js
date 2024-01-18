@@ -31,6 +31,9 @@ export class TicTacToe {
 
     /**
      * @type {[number, number][]}
+     *
+     * formula specifies how to calculate the direction, be it horizontal, vertical, diagonal 1, diagonal 2
+     * does not need to specify the inverse direction (like horizontal from the left/right)
      */
     formulas
 
@@ -107,30 +110,30 @@ export class TicTacToe {
 
         if (this.matchData.length == 0) return winData
 
-        let counted = 1
+        let count = 1
         const last = this.matchData[this.matchData.length - 1]
         const currentPlayerID = last.playerID
 
         for (let i = 0; i < 2; i++) {
             const inverter = i ? -1 : 1
-            let checkIndex = 1
+            let offset = 1
 
-            while (counted < 3) {
-                const exists = this.matchData.find(
+            while (count < 3) {
+                const playerTurn = this.matchData.find(
                     data =>
                         data.playerID == currentPlayerID &&
-                        data.x == last.x + formula[0] * (checkIndex * inverter) &&
-                        data.y == last.y + formula[1] * (checkIndex * inverter)
+                        data.x == last.x + formula[0] * (offset * inverter) &&
+                        data.y == last.y + formula[1] * (offset * inverter)
                 )
 
-                if (!exists) break
-                winData.data.push([exists.x, exists.y])
-                counted++
-                checkIndex++
+                if (!playerTurn) break
+                winData.data.push([playerTurn.x, playerTurn.y])
+                offset++
+                count++
             }
         }
 
-        winData.win = counted == 3
+        winData.win = count == 3
 
         return winData
     }
