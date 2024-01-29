@@ -2,161 +2,222 @@
 import { TicTacToe, FINAL_DATA } from './game.js'
 
 const PLAYER_NAME = ['X', 'O']
+const ENUM_STATE = { unplayed: 0, playing: 1, finished: 2, replay: 3 }
 
-export class Controller {
-    Game
-    stateElement
-    gridElement
+export class Controller extends TicTacToe {
+    container
     /**
-     * @typedef {HTMLDivElement[][]} tiles
-     * @type {tiles}
+     * @type {keyof typeof ENUM_STATE}
      */
-    tiles
+    state
+    stateContainer
+    StateManager
+    tilesContainer
+    TilesManager
+    /**
+     * @type {(() => any)[]}
+     */
+    onGameProgressListeners
 
     /**
-     * @param {TicTacToe} Game
-     * @param {HTMLDivElement} container
+     * @param {HTMLElement} container
      */
-    constructor(Game, container) {
-        this.Game = Game
-        this.stateElement = document.createElement('div')
-        this.stateElement.id = 'state'
-        this.gridElement = document.createElement('div')
-        this.gridElement.id = 'gameGrid'
-        this.gridElement.style.cursor = 'not-allowed'
-        this.tiles = this.genTiles()
-        this.loadTiles()
+    constructor(container) {
+        super()
+        this.container = container
+        this.state = 'unplayed'
+        this.stateContainer = document.createElement('div')
+        this.stateContainer.id = 'state'
+        this.tilesContainer = document.createElement('div')
+        this.onGameProgressListeners = []
+        this.container.appendChild(this.stateContainer)
+        this.container.appendChild(this.tilesContainer)
 
-        container.appendChild(this.stateElement)
-        container.appendChild(this.gridElement)
-
-        this.stateElement.appendChild(this.genPlayButton())
+        this.StateManager = new StateManager(this, this.stateContainer)
+        this.TilesManager = new TilesManager(this, this.tilesContainer)
+        // on startup only
+        this.updateState('unplayed', true)
     }
 
     /**
-     * @returns {HTMLDivElement}
+     *
+     * @param {keyof typeof ENUM_STATE} state
+     * @param {boolean} force
      */
-    genPlayButton() {
-        const element = document.createElement('div')
-        element.classList.add('gamePlayButton')
+    updateState(state, force = false) {
+        if (this.state === state && !force) return
+        this.state = state
+        this.StateManager.updateState(state)
+        this.TilesManager.updateState(state)
+    }
 
-        const playText = document.createElement('span')
-        playText.innerText = 'Play!'
-        element.appendChild(playText)
+    updateGameProgress() {
+        this.onGameProgressListeners.forEach(fn => fn())
 
-        element.addEventListener('click', () => {
-            this.play()
-        })
-
-        return element
+        if (this.checkWinFromLastMoveAllFormula()) this.updateState('finished')
     }
 
     /**
-     * @param {string} text
-     * @returns {HTMLSpanElement}
+     *
+     * @param {() => any} fn
      */
-    genStateText(text) {
-        const element = document.createElement('span')
-        element.innerText = text
-
-        return element
+    onGameProgress(fn) {
+        this.onGameProgressListeners.push(fn)
     }
 
     /**
-     * Internal function to generate the 9 tiles
-     * @returns {tiles}
+     *
+     * @param {() => any} fn
      */
+    removeOnGameProgress(fn) {
+        this.onGameProgressListeners = this.onGameProgressListeners.filter(f => f !== fn)
+    }
+}
+
+class StateManager {
+    container
+    controller
+    /**
+     * @type {keyof typeof ENUM_STATE}
+     */
+    currentState
+
+    /**
+     * @param {Controller} controller
+     * @param {HTMLElement} container
+     */
+    constructor(controller, container) {
+        this.controller = controller
+        this.currentState = 'unplayed'
+        this.container = container
+
+        this.controller.onGameProgress(() => this.updateEffects())
+        this.updateEffects()
+    }
+
+    /**
+     *
+     * @param {keyof typeof ENUM_STATE} state
+     */
+    updateState(state) {
+        this.currentState = state
+
+        this.updateEffects()
+    }
+
+    updateEffects() {
+        for (const child of this.container.childNodes) {
+            this.container.removeChild(child)
+        }
+
+        switch (this.currentState) {
+            case 'unplayed':
+                {
+                    const button = document.createElement('button')
+                    button.innerText = 'Play!'
+                    button.classList.add('gamePlayButton')
+                    button.addEventListener('click', () => {
+                        this.controller.updateState('playing')
+                        this.controller.play()
+                    })
+
+                    this.container.appendChild(button)
+                }
+                break
+            case 'playing':
+                {
+                    const text = document.createElement('span')
+                    text.innerText = `Your turn: ${PLAYER_NAME[this.controller.currentPlayerTurn]}`
+
+                    this.container.appendChild(text)
+                }
+                break
+            case 'finished':
+                {
+                    const text = document.createElement('span')
+                    const winData = this.controller.checkWinFromLastMoveAllFormula()
+                    if (winData == FINAL_DATA.WIN) {
+                        text.innerText = `Winner: ${PLAYER_NAME[this.controller.win]}`
+                    } else {
+                        text.innerText = `Draw!`
+                    }
+
+                    this.container.appendChild(text)
+                }
+                break
+        }
+    }
+}
+
+class TilesManager {
+    container
+    controller
+    /**
+     * @type {keyof typeof ENUM_STATE}
+     */
+    currentState
+    /**
+     * @param {Controller} controller
+     * @param {HTMLElement} container
+     */
+    constructor(controller, container) {
+        this.controller = controller
+        this.container = container
+        this.currentState = 'unplayed'
+
+        this.updateEffects()
+        this.controller.onGameProgress(() => this.updateEffects())
+    }
+
+    /**
+     * @param {keyof typeof ENUM_STATE} state
+     */
+    updateState(state) {
+        this.currentState = state
+
+        this.updateEffects()
+    }
+
+    updateEffects() {
+        for (const child of this.container.childNodes) {
+            this.container.removeChild(child)
+        }
+
+        const tilesContainer = document.createElement('div')
+        tilesContainer.id = 'gameTiles'
+        if (this.currentState != 'playing') {
+            tilesContainer.classList.add('noclick')
+        } else {
+            tilesContainer.classList.remove('noclick')
+        }
+
+        this.container.append(tilesContainer)
+
+        const tiles = this.genTiles()
+        tilesContainer.append(...tiles)
+    }
 
     genTiles() {
         /**
-         * @type {tiles}
+         * @type {HTMLElement[]}
          */
-        const list = []
-
+        const tiles = []
         for (let y = 0; y < 3; y++) {
-            list.push([])
             for (let x = 0; x < 3; x++) {
-                const element = document.createElement('div')
-                element.classList.add('tile')
-                element.addEventListener('click', () => {
-                    this.turn(x, y)
+                const tile = document.createElement('div')
+                tile.classList.add('tile')
+                tile.addEventListener('click', () => {
+                    this.controller.takeTurn(x, y)
+                    this.controller.updateGameProgress()
                 })
 
-                list[y].push(element)
+                const tileData = this.controller.matchData.find(data => data.x == x && data.y == y)
+                if (tileData) tile.innerText = PLAYER_NAME[tileData.playerID]
+
+                tiles.push(tile)
             }
         }
 
-        return list
-    }
-
-    /**
-     * @returns {void}
-     */
-
-    loadTiles() {
-        while (this.gridElement.lastChild) this.gridElement.removeChild(this.gridElement.lastChild)
-
-        for (const elements of this.tiles) {
-            for (const element of elements) {
-                this.gridElement.appendChild(element)
-            }
-        }
-    }
-
-    /**
-     * @returns {void}
-     */
-    play() {
-        this.Game.play()
-        this.updateTurnText()
-        this.gridElement.style.cursor = 'pointer'
-    }
-
-    /**
-     * @param {number} x
-     * @param {number} y
-     * @returns {void}
-     */
-    turn(x, y) {
-        if (!this.Game.started || this.Game.finished) {
-            return
-        }
-
-        const currentTurn = this.Game.currentPlayerTurn
-        const valid = this.Game.takeTurn(x, y)
-        if (!valid) return
-
-        this.tiles[y][x].innerText = PLAYER_NAME[currentTurn]
-        this.updateTurnText()
-
-        const winData = this.Game.checkWinFromLastMoveAllFormula()
-        switch (winData) {
-            case FINAL_DATA.WIN:
-                {
-                    const text = 'Winner: ' + PLAYER_NAME[this.Game.win]
-                    this.updateTurnTextCustom(text)
-                }
-                break
-            case FINAL_DATA.DRAW: {
-                this.updateTurnTextCustom('Draw!')
-            }
-        }
-    }
-
-    /**
-     * @returns {void}
-     */
-    updateTurnText() {
-        this.stateElement.firstChild?.remove()
-        this.stateElement.appendChild(this.genStateText('Your turn: ' + PLAYER_NAME[this.Game.currentPlayerTurn]))
-    }
-
-    /**
-     * @returns {void}
-     * @param {string} text
-     */
-    updateTurnTextCustom(text) {
-        this.stateElement.firstChild?.remove()
-        this.stateElement.appendChild(this.genStateText(text))
+        return tiles
     }
 }

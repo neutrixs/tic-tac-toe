@@ -41,9 +41,14 @@ body {
 
     box-shadow: 0.1em 0.1em 0.2em #00000080;
     cursor: pointer;
+
+    /*Button style reset*/
+    color: white;
+    border: 0;
+    font-size: 1em;
 }
 
-#gameGrid {
+#gameTiles {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
     grid-template-rows: 1fr 1fr 1fr;
@@ -62,10 +67,15 @@ body {
     height: 100%;
     background-color: hsl(240, 15%, 25%);
     font-size: 4em;
+    cursor: pointer;
+}
+
+.noclick > div {
+    cursor: not-allowed;
 }
 
 @media screen and (max-width: 550px), screen and (max-height: 630px) {
-    #gameGrid {
+    #gameTiles {
         width: 20em;
     }
 }

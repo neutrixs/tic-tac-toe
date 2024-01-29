@@ -38,6 +38,11 @@ export class TicTacToe {
     formulas
 
     constructor() {
+        this.init()
+    }
+
+    // might be reused for replaying the game
+    init() {
         this.started = false
         this.finished = false
         this.win = -1
@@ -70,6 +75,7 @@ export class TicTacToe {
      */
 
     takeTurn(x, y) {
+        if (!this.started) return false
         const exists = this.matchData.find(data => data.x == x && data.y == y)
         if (exists || this.win != -1) return false
 

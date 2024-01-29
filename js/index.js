@@ -1,6 +1,6 @@
-import { TicTacToe } from './game.js'
+//@ts-check
 import { Controller } from './controller.js'
-
 const gameContainer = document.getElementById('gameContainer')
-const game = new TicTacToe()
-const controller = new Controller(game, gameContainer)
+if (gameContainer) {
+    new Controller(gameContainer)
+}
