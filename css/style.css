@@ -6,6 +6,13 @@ body {
     font-family: 'JetBrains Mono', monospace;
 }
 
+#state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5em;
+}
+
 #container {
     width: 100vw;
     height: 100vh;

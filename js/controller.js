@@ -106,7 +106,7 @@ class StateManager {
     }
 
     updateEffects() {
-        for (const child of this.container.childNodes) {
+        for (const child of [...this.container.childNodes]) {
             this.container.removeChild(child)
         }
 
@@ -142,7 +142,17 @@ class StateManager {
                         text.innerText = `Draw!`
                     }
 
+                    const button = document.createElement('button')
+                    button.innerText = 'Replay!'
+                    button.classList.add('gamePlayButton')
+                    button.addEventListener('click', () => {
+                        this.controller.init()
+                        this.controller.updateState('playing')
+                        this.controller.play()
+                    })
+
                     this.container.appendChild(text)
+                    this.container.appendChild(button)
                 }
                 break
         }
@@ -179,7 +189,7 @@ class TilesManager {
     }
 
     updateEffects() {
-        for (const child of this.container.childNodes) {
+        for (const child of [...this.container.childNodes]) {
             this.container.removeChild(child)
         }
 
