@@ -1,5 +1,5 @@
 body {
-    background-color: hsl(220, 15%, 15%);
+    background-color: hsl(240, 15%, 25%);
     margin: 0;
     padding: 0;
     color: white;
@@ -10,7 +10,13 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 0.5em;
+    gap: 1em;
+}
+
+#state > span {
+    padding: 0.5em;
+    box-shadow: 0.1em 0.1em 0.1em hsl(240, 15%, 15%) inset, -0.1em -0.1em 0.1em hsl(240, 15%, 35%) inset;
+    border-radius: 0.25em;
 }
 
 #container {
@@ -25,7 +31,10 @@ body {
 #container > div#title {
     font-size: 2em;
     font-weight: bold;
-    padding: 0.5em 0;
+    margin: 0.5em 0;
+    padding: 0.25em;
+    border-radius: 0.3em;
+    box-shadow: 0.05em 0.05em 0.05em hsl(240, 15%, 15%) inset, -0.05em -0.05em 0.05em hsl(240, 15%, 35%) inset;
 }
 
 #gameContainer {
@@ -46,35 +55,57 @@ body {
     background-color: hsl(240, 15%, 25%);
     border-radius: 0.5em;
 
-    box-shadow: 0.1em 0.1em 0.2em #00000080;
+    box-shadow: 0.2em 0.2em 0.2em hsl(240, 15%, 15%), -0.2em -0.2em 0.2em hsl(240, 15%, 35%);
     cursor: pointer;
+    transition: transform 0.1s;
 
     /*Button style reset*/
     color: white;
     border: 0;
     font-size: 1em;
+    font-family: 'JetBrains Mono', monospace;
+}
+
+.gamePlayButton:active {
+    box-shadow: 0.1em 0.1em 0.1em hsl(240, 15%, 15%) inset, -0.1em -0.1em 0.1em hsl(240, 15%, 35%) inset;
+    transform: scale(0.95);
 }
 
 #gameTiles {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
     grid-template-rows: 1fr 1fr 1fr;
-    background-color: white;
     width: 30em;
     gap: 0.5em;
-    border: solid white 0.5em;
     aspect-ratio: 1;
+    padding: 1em;
+    border-radius: 0.5em;
+
+    box-shadow: 0.25em 0.25em 0.25em hsl(240, 15%, 15%) inset, -0.25em -0.25em 0.25em hsl(240, 15%, 35%) inset;
 }
 
 .tile {
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 100%;
-    height: 100%;
+    width: 95%;
+    height: 95%;
     background-color: hsl(240, 15%, 25%);
+    box-shadow: 0.25rem 0.25rem 0.25rem hsl(240, 15%, 15%), -0.25rem -0.25rem 0.25rem hsl(240, 15%, 35%);
+    border-radius: 0.25rem;
     font-size: 4em;
     cursor: pointer;
+
+    position: relative;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.tileActive {
+    box-shadow: 0.25rem 0.25rem 0.25rem hsl(240, 15%, 15%) inset, -0.25rem -0.25rem 0.25rem hsl(240, 15%, 35%) inset;
+    /* 1/0.95 * 50 */
+    transform: scale(0.95) translate(-52.63%, -52.63%);
 }
 
 .noclick > div {

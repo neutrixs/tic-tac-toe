@@ -222,7 +222,10 @@ class TilesManager {
                 })
 
                 const tileData = this.controller.matchData.find(data => data.x == x && data.y == y)
-                if (tileData) tile.innerText = PLAYER_NAME[tileData.playerID]
+                if (tileData) {
+                    tile.innerText = PLAYER_NAME[tileData.playerID]
+                    tile.classList.add('tileActive')
+                }
 
                 tiles.push(tile)
             }
