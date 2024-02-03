@@ -95,6 +95,7 @@ body {
     border-radius: 0.25rem;
     font-size: 4em;
     cursor: pointer;
+    transition: box-shadow 0.1s, transform 0.1s;
 
     position: relative;
     top: 50%;

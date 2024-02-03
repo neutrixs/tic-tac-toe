@@ -27,7 +27,6 @@ export class Controller extends TicTacToe {
         this.container = container
         this.state = 'unplayed'
         this.stateContainer = document.createElement('div')
-        this.stateContainer.id = 'state'
         this.tilesContainer = document.createElement('div')
         this.onGameProgressListeners = []
         this.container.appendChild(this.stateContainer)
@@ -90,6 +89,7 @@ class StateManager {
         this.controller = controller
         this.currentState = 'unplayed'
         this.container = container
+        this.container.id = 'state'
 
         this.controller.onGameProgress(() => this.updateEffects())
         this.updateEffects()
@@ -166,6 +166,7 @@ class TilesManager {
      * @type {keyof typeof ENUM_STATE}
      */
     currentState
+    tiles
     /**
      * @param {Controller} controller
      * @param {HTMLElement} container
@@ -173,6 +174,9 @@ class TilesManager {
     constructor(controller, container) {
         this.controller = controller
         this.container = container
+        this.tiles = this.genTiles()
+        this.container.id = 'gameTiles'
+        this.container.append(...this.tiles)
         this.currentState = 'unplayed'
 
         this.updateEffects()
@@ -189,22 +193,56 @@ class TilesManager {
     }
 
     updateEffects() {
-        for (const child of [...this.container.childNodes]) {
-            this.container.removeChild(child)
-        }
-
-        const tilesContainer = document.createElement('div')
-        tilesContainer.id = 'gameTiles'
+        const tilesContainer = this.container
         if (this.currentState != 'playing') {
             tilesContainer.classList.add('noclick')
         } else {
             tilesContainer.classList.remove('noclick')
         }
 
-        this.container.append(tilesContainer)
+        this.updateTiles()
+    }
+    /**
+     *
+     * @param {number} useExistingIndex -1 means create new tile, otherwise use the index
+     * @param {number} x
+     * @param {number} y
+     */
+    genTile(useExistingIndex, x, y) {
+        const tile = useExistingIndex == -1 ? document.createElement('div') : this.tiles[useExistingIndex]
+        if (useExistingIndex == -1) {
+            tile.classList.add('tile')
+            tile.addEventListener('click', () => {
+                this.controller.takeTurn(x, y)
+                this.controller.updateGameProgress()
+            })
+        }
 
-        const tiles = this.genTiles()
-        tilesContainer.append(...tiles)
+        const tileData = this.controller.matchData.find(data => data.x == x && data.y == y)
+        if (tileData) {
+            tile.innerText = PLAYER_NAME[tileData.playerID]
+            tile.classList.add('tileActive')
+        } else {
+            tile.innerText = ''
+            tile.classList.remove('tileActive')
+        }
+
+        return tile
+    }
+
+    updateTiles() {
+        /**
+         * @type {HTMLElement[]}
+         */
+        const tiles = []
+        for (let y = 0; y < 3; y++) {
+            for (let x = 0; x < 3; x++) {
+                const tile = this.genTile(3 * y + x, x, y)
+                tiles.push(tile)
+            }
+        }
+
+        this.tiles = tiles
     }
 
     genTiles() {
@@ -214,18 +252,7 @@ class TilesManager {
         const tiles = []
         for (let y = 0; y < 3; y++) {
             for (let x = 0; x < 3; x++) {
-                const tile = document.createElement('div')
-                tile.classList.add('tile')
-                tile.addEventListener('click', () => {
-                    this.controller.takeTurn(x, y)
-                    this.controller.updateGameProgress()
-                })
-
-                const tileData = this.controller.matchData.find(data => data.x == x && data.y == y)
-                if (tileData) {
-                    tile.innerText = PLAYER_NAME[tileData.playerID]
-                    tile.classList.add('tileActive')
-                }
+                const tile = this.genTile(-1, x, y)
 
                 tiles.push(tile)
             }
