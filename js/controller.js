@@ -204,13 +204,13 @@ class TilesManager {
     }
     /**
      *
-     * @param {number} useExistingIndex -1 means create new tile, otherwise use the index
+     * @param {number} existingIndex -1 means create new tile
      * @param {number} x
      * @param {number} y
      */
-    genTile(useExistingIndex, x, y) {
-        const tile = useExistingIndex == -1 ? document.createElement('div') : this.tiles[useExistingIndex]
-        if (useExistingIndex == -1) {
+    genTile(existingIndex, x, y) {
+        const tile = existingIndex == -1 ? document.createElement('div') : this.tiles[existingIndex]
+        if (existingIndex == -1) {
             tile.classList.add('tile')
             tile.addEventListener('click', () => {
                 this.controller.takeTurn(x, y)
