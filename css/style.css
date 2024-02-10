@@ -96,6 +96,7 @@ body {
     font-size: 4em;
     cursor: pointer;
     transition: box-shadow 0.1s, transform 0.1s;
+    overflow: hidden;
 
     position: relative;
     top: 50%;
@@ -109,6 +110,13 @@ body {
     box-shadow: 0.25rem 0.25rem 0.25rem hsl(240, 15%, 15%) inset, -0.25rem -0.25rem 0.25rem hsl(240, 15%, 35%) inset;
     /* 1/0.95 * 50 */
     transform: scale(0.95) translate(-52.63%, -52.63%);
+}
+
+.line {
+    position: absolute;
+    height: 0.2em;
+    width: 5em;
+    background-color: white;
 }
 
 .noclick > div {

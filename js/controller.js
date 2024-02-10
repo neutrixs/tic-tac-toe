@@ -222,6 +222,17 @@ class TilesManager {
         if (tileData) {
             tile.innerText = PLAYER_NAME[tileData.playerID]
             tile.classList.add('tileActive')
+
+            const winData = this.controller.checkWinFromLastMoveAllFormula()
+            if (winData.win && winData.data.find(d => d[0] == x && d[1] == y)) {
+                const line = document.createElement('div')
+                line.classList.add('line')
+                line.style.transform = `rotate(${(Math.atan2(winData.formula[1], winData.formula[0]) * 180) / Math.PI}deg)`
+                tile.appendChild(line)
+            } else {
+                const child = tile.querySelector('.line')
+                if (child) tile.removeChild(child)
+            }
         } else {
             tile.innerText = ''
             tile.classList.remove('tileActive')
