@@ -126,9 +126,11 @@ export class TicTacToe {
 
         if (this.matchData.length == 0) return winData
 
-        let count = 1
+        let count = 0
         const last = this.matchData[this.matchData.length - 1]
         const currentPlayerID = last.playerID
+        winData.data.push([last.x, last.y])
+        count++
 
         for (let i = 0; i < 2; i++) {
             const inverter = i ? -1 : 1
