@@ -38,7 +38,17 @@ export class TicTacToe {
     formulas
 
     constructor() {
-        this.init()
+        this.started = false
+        this.finished = false
+        this.win = -1
+        this.matchData = []
+        this.currentPlayerTurn = 0
+        this.formulas = [
+            [1, 0],
+            [0, 1],
+            [1, 1],
+            [1, -1],
+        ]
     }
 
     // might be reused for replaying the game
