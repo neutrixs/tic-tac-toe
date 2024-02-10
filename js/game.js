@@ -92,7 +92,7 @@ export class TicTacToe {
         this.matchData.push({ playerID: this.currentPlayerTurn, x, y })
         this.currentPlayerTurn = this.currentPlayerTurn ? 0 : 1
 
-        const win = this.checkWinFromLastMoveAllFormula()
+        const win = this.gameplayStatus
         if (win == FINAL_DATA.WIN) {
             this.win = this.matchData[this.matchData.length - 1].playerID
         }
@@ -155,18 +155,36 @@ export class TicTacToe {
     }
 
     /**
-     * @returns {FinalData}
+     * @returns {WinProperty}
      */
 
     checkWinFromLastMoveAllFormula() {
-        let win = FINAL_DATA.UNFINISHED
+        /**
+         * @type {WinProperty}
+         */
+        const winData = {
+            win: false,
+            data: [],
+        }
         for (const formula of this.formulas) {
-            if (this.checkWinFromLastMove(formula).win) {
-                win = FINAL_DATA.WIN
+            const data = this.checkWinFromLastMove(formula)
+            if (data.win) {
+                return data
             }
         }
 
-        if (win == FINAL_DATA.UNFINISHED && this.matchData.length == 9) win = FINAL_DATA.DRAW
+        return winData
+    }
+
+    /**
+     * @returns {FinalData}
+     */
+    get gameplayStatus() {
+        const data = this.checkWinFromLastMoveAllFormula()
+        let win = FINAL_DATA.UNFINISHED
+
+        if (data.win) win = FINAL_DATA.WIN
+        if (win == FINAL_DATA.UNFINISHED && data.data.length == 9) win = FINAL_DATA.DRAW
 
         return win
     }

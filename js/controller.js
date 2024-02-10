@@ -53,7 +53,7 @@ export class Controller extends TicTacToe {
     updateGameProgress() {
         this.onGameProgressListeners.forEach(fn => fn())
 
-        if (this.checkWinFromLastMoveAllFormula()) this.updateState('finished')
+        if (this.gameplayStatus) this.updateState('finished')
     }
 
     /**
@@ -135,7 +135,7 @@ class StateManager {
             case 'finished':
                 {
                     const text = document.createElement('span')
-                    const winData = this.controller.checkWinFromLastMoveAllFormula()
+                    const winData = this.controller.gameplayStatus
                     if (winData == FINAL_DATA.WIN) {
                         text.innerText = `Winner: ${PLAYER_NAME[this.controller.win]}`
                     } else {
