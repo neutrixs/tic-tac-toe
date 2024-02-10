@@ -106,6 +106,7 @@ export class TicTacToe {
     /**
      * @typedef {Object} WinProperty
      * @property {boolean} win
+     * @property {[number, number]} formula
      * @property {[number, number][]} data - Arrays of x's and y's
      */
 
@@ -121,6 +122,7 @@ export class TicTacToe {
          */
         const winData = {
             win: false,
+            formula,
             data: [],
         }
 
@@ -166,6 +168,7 @@ export class TicTacToe {
          */
         const winData = {
             win: false,
+            formula: [0, 0],
             data: [],
         }
         for (const formula of this.formulas) {
@@ -185,8 +188,11 @@ export class TicTacToe {
         const data = this.checkWinFromLastMoveAllFormula()
         let win = FINAL_DATA.UNFINISHED
 
-        if (data.win) win = FINAL_DATA.WIN
-        if (win == FINAL_DATA.UNFINISHED && data.data.length == 9) win = FINAL_DATA.DRAW
+        if (data.win) {
+            win = FINAL_DATA.WIN
+        } else if (this.matchData.length == 9) {
+            win = FINAL_DATA.DRAW
+        }
 
         return win
     }
